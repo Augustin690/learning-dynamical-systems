@@ -33,8 +33,8 @@ def diameter(X):
 
 
 def approx_non_linear_function(X, Y, L, ratio):
-    x_c = np.linspace(np.min(X), np.max(Y), L).reshape((L, 1))
-    X = X.reshape((X.shape[0], 1))
+    x_c = np.linspace(np.min(X), np.max(Y), L).reshape((L,1))
+    X = X.reshape((X.shape[0],1))
     eps = ratio * diameter(X)
     phi_x = radial_basis_function(X, x_c, eps)
     # return transform(X, least_squares(phi_x, Y))
