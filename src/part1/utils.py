@@ -33,7 +33,7 @@ def diameter(X):
 
 
 def approx_non_linear_function(X, Y, L, ratio):
-    x_c = np.linspace(np.min(X), np.max(Y), L).reshape((L,1))
+    x_c = np.linspace(-3.5, 4.5, L).reshape((L, 1))
     X = X.reshape((X.shape[0],1))
     eps = ratio * diameter(X)
     phi_x = radial_basis_function(X, x_c, eps)
@@ -46,8 +46,15 @@ def built_int_interpolator(X, Y, eps):
 
     return RBFInterpolator(X, Y, kernel='gaussian', epsilon=eps)(X)
 
+def approx_non_linear_field(X, Y, L, ratio):
+    x_c = np.linspace(-3.5, 4.5, L).reshape((L, 1))
+    X = X.reshape((X.shape[0],1))
+    eps = ratio * diameter(X)
+    phi_x = radial_basis_function(X, x_c, eps)
+    # return transform(X, least_squares(phi_x, Y))
+    return phi_x
 
-def least_squares(A, b, cond=0.1):
+def least_squares(A, b, cond=0.001):
     """ Returns a Least squares solution of Ax = b
 
     Args:
@@ -65,6 +72,11 @@ def least_squares(A, b, cond=0.1):
 
     # Return the solution
     return x
+
+
+def lstq_residuals(A, b, cond=0.001):
+    x, residuals, rank, s = lstsq(A, b, cond=cond)
+    return residuals
 
 
 def transform(X, coefficients):
@@ -114,19 +126,3 @@ def mean_squared_error(y_true, y_pred):
     mean_squared_distance = np.mean(row_squared_distances)
 
     return mean_squared_distance
-
-
-def error(y_true, y_pred):
-
-    error = 0
-    err = np.array([])
-
-    for i in range(len(y_true)):
-
-        err = np.append(err,[cdist(y_true[i:i+1,:], y_pred[i:i+1,:], 'sqeuclidean')] )
-        #error.append(cdist(y_true[i:i+1,:], y_pred[i:i+1,:], 'sqeuclidean'))
-
-        error += cdist(y_true[i:i+1,:], y_pred[i:i+1,:], 'sqeuclidean')
-
-    #return error/len(y_true)
-    return error.item()/len(y_true)
