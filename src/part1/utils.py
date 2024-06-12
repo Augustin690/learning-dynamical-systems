@@ -22,7 +22,7 @@ def radial_basis_function(x, x_c, eps):
     - Radial basis function values evaluated at data points x
     """
     # Hint: Use cdist from scipy.spatial.distanc
-    phi_x = np.exp(-(cdist(x_c, x, 'sqeuclid') / eps))
+    phi_x = np.exp(-(cdist(x_c, x, 'sqeuclid') / eps**2))
 
     return phi_x
 
@@ -43,7 +43,7 @@ def approx_non_linear_function(X, Y, L, ratio):
 def built_int_interpolator(X, Y, eps):
     #X_augment = np.column_stack([X, np.ones(X.shape)])
 
-    return RBFInterpolator(X, Y, kernel='gaussian', epsilon=eps)(X)
+    return RBFInterpolator(X, Y, kernel='gaussian', epsilon= eps)(X)
 
 
 def least_squares(A, b, cond=0.1):
@@ -68,4 +68,6 @@ def least_squares(A, b, cond=0.1):
 
 def transform(X, coefficients):
     X_augment = np.column_stack([X, np.ones(X.shape)])
-    return coefficients @ X_augment.T
+    #return coefficients @ X_augment.T
+    print('updated')
+    return X_augment@coefficients
