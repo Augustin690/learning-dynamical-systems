@@ -85,6 +85,11 @@ def x1_estim(callable_fun, x_0, T):
     return x1_estim
 
 
+def trajectory(callable_fun, x_0,T, t_eval):
+    solve = solve_ivp(callable_fun, [0, T], x_0, t_eval=t_eval)
+
+    return solve.y.T
+
 def mean_squared_error(y_true, y_pred):
     """
       Compute the mean squared Euclidean distance between two matrices.
