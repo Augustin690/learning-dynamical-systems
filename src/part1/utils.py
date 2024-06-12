@@ -60,18 +60,18 @@ def least_squares(A, b, cond=0.1):
     # TODO: Implement using scipy.linalg.lstsq 
     # Hint: Don't forget that lstsq also returns other parameters such as residuals, rank, singular values etc.
     # Solve the least squares problem using scipy.linalg.lstsq
-    A_augment = np.column_stack([A, np.ones(A.shape)])
-    x, residuals, rank, s = lstsq(A_augment, b, cond=cond)
+    #A_augment = np.column_stack([A, np.ones(A.shape)])
+    x, residuals, rank, s = lstsq(A, b, cond=cond)
 
     # Return the solution
     return x
 
 
 def transform(X, coefficients):
-    X_augment = np.column_stack([X, np.ones(X.shape)])
+    #_augment = np.column_stack([X, np.ones(X.shape)])
     # return coefficients @ X_augment.T
-    print('updated')
-    return X_augment @ coefficients
+    #print('updated')
+    return np.dot(X,coefficients)
 
 
 def x1_estim(callable_fun, x_0, T):
