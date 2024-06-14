@@ -29,10 +29,13 @@ def radial_basis_function(x, x_c, eps):
 
 
 def diameter(X):
-    return np.max(X) - np.min(X)
+    #return np.max(X) - np.min(X)
+    pairwise_distances = cdist(X, X, 'euclidean')
+    # Find the maximum distance
+    return np.max(pairwise_distances)
 
 
-def approx_non_linear_function(X, Y, L, ratio):
+def approx_non_linear_function(X, L, ratio):
     x_c = np.linspace(-3.5, 4.5, L).reshape((L, 1))
     X = X.reshape((X.shape[0],1))
     eps = ratio * diameter(X)
@@ -46,11 +49,11 @@ def built_int_interpolator(X, Y, eps):
 
     return RBFInterpolator(X, Y, kernel='gaussian', epsilon=eps)(X)
 
-def approx_non_linear_field(X, Y, L, ratio):
-    x_c = np.linspace(-3.5, 4.5, L).reshape((L, 1))
-    X = X.reshape((X.shape[0],1))
+def approx_non_linear_field(X, centers, ratio):
+    #x_c = np.linspace(-3.5, 4.5, L).reshape((L, 1))
+    #X = X.reshape((X.shape[0],1))
     eps = ratio * diameter(X)
-    phi_x = radial_basis_function(X, x_c, eps)
+    phi_x = radial_basis_function(X, centers, eps)
     # return transform(X, least_squares(phi_x, Y))
     return phi_x
 
