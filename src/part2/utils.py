@@ -31,11 +31,10 @@ def time_delay(data, col: int, delta_t: int, out_dim: int):
     if out_dim == 2:
         # delayed_embed = np.empty((np.shape(data)[0] - delta_t), out_dim)
         delayed_embed = np.column_stack((data[0:-delta_t, col], data[delta_t:np.shape(data)[0] , col]))
-        print('coucs')
         return delayed_embed
 
     elif out_dim == 3:
         delayed_embed = np.column_stack((data[0:-2*delta_t, col], data[delta_t: -delta_t, col],
                                          data[2*delta_t:np.shape(data)[0],col]))
-        print('3d')
+
         return delayed_embed
