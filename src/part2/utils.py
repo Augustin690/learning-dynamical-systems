@@ -2,7 +2,8 @@ import numpy as np
 from scipy.spatial.distance import cdist
 import matplotlib.pyplot as plt
 
-# TODO: Define all the functions (in addition to the ones below) required to complete tasks 4-5 in this python file. 
+
+# TODO: Define all the functions (in addition to the ones below) required to complete tasks 4-5 in this python file.
 
 def time_delay(data, col: int, delta_t: int, out_dim: int):
     """
@@ -26,6 +27,15 @@ def time_delay(data, col: int, delta_t: int, out_dim: int):
         - Stack the 3 columns to form the delayed coordinates    
     """
     # TODO: Implement this function!
-    pass
+    # column = data[:,col]
+    if out_dim == 2:
+        # delayed_embed = np.empty((np.shape(data)[0] - delta_t), out_dim)
+        delayed_embed = np.column_stack((data[0:-delta_t, col], data[delta_t:np.shape(data)[0] , col]))
+        print('coucs')
+        return delayed_embed
 
-
+    elif out_dim == 3:
+        delayed_embed = np.column_stack((data[0:-2*delta_t, col], data[delta_t: -delta_t, col],
+                                         data[2*delta_t:np.shape(data)[0],col]))
+        print('3d')
+        return delayed_embed
