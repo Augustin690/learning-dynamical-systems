@@ -57,6 +57,7 @@ def approx_non_linear_field(X, centers, ratio):
     # return transform(X, least_squares(phi_x, Y))
     return phi_x
 
+
 def least_squares(A, b, cond=0.001):
     """ Returns a Least squares solution of Ax = b
 
