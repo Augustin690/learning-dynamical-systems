@@ -46,17 +46,16 @@ def least_squares(A, b, cond=0.01):
     return lstsq(A, b, cond=cond)
 
 
-def linear_fit(X,Y):
-       """Fits linear model between X (input data) and Y (dependent dat)
+def linear_fit(X, Y):
+    """Fits linear model between X (input data) and Y (dependent dat)
 
     Args:
-        X: Input array 
+        X: Input array
         Y: Dependatn array, f(X)
     Returns:
         npt.NDArray[np.float64]: Least squares coefficients
     """
-       return least_squares(X,Y)[0]
-
+    return least_squares(X, Y)[0]
 
 
 def transform(X, C):
@@ -68,20 +67,30 @@ def transform(X, C):
     Returns:
         npdt.NDArray[np.float64]: Transformation of X according to linear model
     """
-    return np.dot(X,C)
+    return np.dot(X, C)
 
 
-def linear_fit_transform(X,Y): 
+def linear_fit_transform(X, Y):
     """Fits linear model on X,Y then apply transformation on X using coefficients of newly fit model
 
     Args:
-        X: Input array 
+        X: Input array
         Y: Dependent array, f(X)
     Returns:
         npt.NDArray[np.float64]: transformation of X according to linear model
     """
-    coef = linear_fit(X,Y)
-    return transform(X,coef)
+    coef = linear_fit(X, Y)
+    return transform(X, coef)
+
+
+def non_linear_fit_transform(X,Y,centers,ratio):
+
+    epsilon = ratio * diameter(X)
+
+    phi_x = radial_basis_function(X, centers, epsilon)
+
+    return linear_fit_transform(phi_x,Y)
+
 
 def mean_squared_error(y_true, y_pred):
     """
@@ -125,13 +134,22 @@ def diameter(X):
     return np.max(pairwise_distances)
 
 
-def approx_non_linear_function(X, L, ratio):
-    x_c = (np.max(X[:,0]) - np.min(X[:,0]))*np.random.random_sample((L,1)) + np.max(X[:,0])
-    #X = X.reshape((X.shape[0], 1))
-    eps = ratio * diameter(X)
-    phi_x = radial_basis_function(X, x_c, eps)
-    # return transform(X, least_squares(phi_x, Y))
-    return phi_x
+def PHI(X, L, ratio):
+        """
+    Compute radial basis function values, given L and epsilon.
+
+    Args:
+    - X: dataset
+
+    Returns:s
+    - Radial basis function values
+    """
+        x_c = np.linspace(-4.5,4.5,L).reshape((L,1))
+        # X = X.reshape((X.shape[0], 1))
+        eps = ratio * diameter(X)
+        phi_x = radial_basis_function(X, x_c, eps)
+        # return transform(X, least_squares(phi_x, Y))
+        return phi_x
 
 
 def built_int_interpolator(X, Y, eps):
@@ -154,7 +172,6 @@ def lstq_residuals(A, b, cond=0.001):
     return residuals
 
 
-
 def x1_estim(callable_fun, x_0, T):
     for i in range(len(x_0)):
         solve = solve_ivp(callable_fun, [0, T], x_0[i, :], t_eval=[T])
@@ -170,5 +187,3 @@ def trajectory(callable_fun, x_0, T, t_eval):
     solve = solve_ivp(callable_fun, [0, T], x_0, t_eval=t_eval)
 
     return solve.y.T
-
-
