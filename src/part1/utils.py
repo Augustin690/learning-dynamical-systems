@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.linalg import lstsq
-import pandas as pd
 from scipy.spatial.distance import cdist
 from scipy.interpolate import RBFInterpolator
 from scipy.integrate import solve_ivp
@@ -29,9 +28,18 @@ def radial_basis_function(x, x_c, eps):
 
 
 def diameter(X):
-    #return np.max(X) - np.min(X)
+    """
+    Compute the diameter of dataset X, that is max(dist(Xi,Xj)) for all Xi, Xj in the dataset. Used to compute epsilon parameter.
+
+    Args:
+    - X: dataset
+    
+    Returns:
+    - Maximum of pairwise distances within the dataset
+    """
+
     pairwise_distances = cdist(X, X, 'euclidean')
-    # Find the maximum distance
+
     return np.max(pairwise_distances)
 
 
@@ -71,11 +79,9 @@ def least_squares(A, b, cond=0.001):
     # TODO: Implement using scipy.linalg.lstsq 
     # Hint: Don't forget that lstsq also returns other parameters such as residuals, rank, singular values etc.
     # Solve the least squares problem using scipy.linalg.lstsq
-    #A_augment = np.column_stack([A, np.ones(A.shape)])
-    x, residuals, rank, s = lstsq(A, b, cond=cond)
 
     # Return the solution
-    return x
+    return lstsq(A, b, cond=cond)
 
 
 def lstq_residuals(A, b, cond=0.001):
