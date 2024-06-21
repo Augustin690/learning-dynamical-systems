@@ -23,7 +23,7 @@ def radial_basis_function(x, x_c, eps):
         Radial basis function values evaluated at data points x
     """
     # Hint: Use cdist from scipy.spatial.distanc
-    phi_x = np.exp(-(cdist(x_c, x, "sqeuclid") / eps ** 2))
+    phi_x = np.exp(-(cdist(x_c, x, "sqeuclid") / eps**2))
 
     return phi_x.T
 
@@ -80,7 +80,7 @@ def linear_fit_transform(X, Y):
         npt.NDArray[np.float64]: transformation of X according to linear model
     """
     coef = linear_fit(X, Y)
-    return transform(X, coef)
+    return transform(X, coef), coef
 
 
 def non_linear_fit_transform(X, Y, x_c, ratio):
@@ -98,7 +98,7 @@ def non_linear_fit_transform(X, Y, x_c, ratio):
 
     epsilon = ratio * diameter(X)
     phi_x = radial_basis_function(X, x_c, epsilon)
-    return linear_fit_transform(phi_x, Y)
+    return linear_fit_transform(phi_x, Y), phi_x
 
 
 def mean_squared_error(y_true, y_pred):
@@ -145,19 +145,20 @@ def diameter(X):
 
 ### USEFUL FOR TASK 2
 
+
 def x1_estim(f, x_0, delta_T):
     """
-      Compute estimate of future state x1 given x0, delta_T and f, derivative of flow operator to be integrated over
-      time
+    Compute estimate of future state x1 given x0, delta_T and f, derivative of flow operator to be integrated over
+    time
 
-      Args:
-        x_0: array representing system state at t=0
-        f: callable function, derivative of flow operator
-        delta_T: span of time separating state x0 and state x1 to be approximated
+    Args:
+      x_0: array representing system state at t=0
+      f: callable function, derivative of flow operator
+      delta_T: span of time separating state x0 and state x1 to be approximated
 
-      Returns:
-        Approximation of future state x1 after delta_T
-      """
+    Returns:
+      Approximation of future state x1 after delta_T
+    """
     for i in range(len(x_0)):
         solve = solve_ivp(f, [0, delta_T], x_0[i, :], t_eval=[delta_T])
         if i == 0:
@@ -189,7 +190,7 @@ def PHI(X, L, ratio):
 def built_int_interpolator(X, Y, eps):
     # X_augment = np.column_stack([X, np.ones(X.shape)])
 
-    return RBFInterpolator(X, Y, kernel="gaussian", epsilon=eps)(X)
+    return RBFInterpolator(X, Y, kernel="gaussian", epsilon=eps)
 
 
 def approx_non_linear_field(X, centers, ratio):
