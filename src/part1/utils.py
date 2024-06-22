@@ -98,7 +98,7 @@ def non_linear_fit_transform(X, Y, x_c, ratio):
 
     epsilon = ratio * diameter(X)
     phi_x = radial_basis_function(X, x_c, epsilon)
-    return linear_fit_transform(phi_x, Y), phi_x
+    return linear_fit_transform(phi_x, Y)
 
 
 def mean_squared_error(y_true, y_pred):
@@ -143,7 +143,13 @@ def diameter(X):
     return np.max(pairwise_distances)
 
 
-### USEFUL FOR TASK 2
+def approx_non_linear_field(X, centers, ratio):
+    # x_c = np.linspace(-3.5, 4.5, L).reshape((L, 1))
+    # X = X.reshape((X.shape[0],1))
+    eps = ratio * diameter(X)
+    phi_x = radial_basis_function(X, centers, eps)
+    # return transform(X, least_squares(phi_x, Y))
+    return phi_x
 
 
 def x1_estim(f, x_0, delta_T):
@@ -193,21 +199,10 @@ def built_int_interpolator(X, Y, eps):
     return RBFInterpolator(X, Y, kernel="gaussian", epsilon=eps)
 
 
-def approx_non_linear_field(X, centers, ratio):
-    # x_c = np.linspace(-3.5, 4.5, L).reshape((L, 1))
-    # X = X.reshape((X.shape[0],1))
-    eps = ratio * diameter(X)
-    phi_x = radial_basis_function(X, centers, eps)
-    # return transform(X, least_squares(phi_x, Y))
-    return phi_x
-
-
-def lstq_residuals(A, b, cond=0.001):
-    x, residuals, rank, s = lstsq(A, b, cond=cond)
-    return residuals
-
-
 def trajectory(callable_fun, x_0, T, t_eval):
     solve = solve_ivp(callable_fun, [0, T], x_0, t_eval=t_eval)
 
     return solve.y.T
+
+
+## add plot functions ?
