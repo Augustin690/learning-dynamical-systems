@@ -128,7 +128,7 @@ def radial_basis_function(x, x_c, eps):
     # Hint: Use cdist from scipy.spatial.distanc
     phi_x = np.exp(-(cdist(x_c, x, "sqeuclid") / eps**2))
 
-    return phi_x
+    return phi_x.T
 
 
 def diameter(X):
@@ -161,10 +161,63 @@ def least_squares(A, b, cond=0.001):
     # Hint: Don't forget that lstsq also returns other parameters such as residuals, rank, singular values etc.
     # Solve the least squares problem using scipy.linalg.lstsq
     # A_augment = np.column_stack([A, np.ones(A.shape)])
-    x, residuals, rank, s = lstsq(A, b, cond=cond)
-
     # Return the solution
-    return x
+    return lstsq(A, b, cond=cond)
+
+
+def linear_fit(X, Y):
+    """Fits linear model between X (input data) and Y (dependent data)
+
+    Args:
+        X: Input array
+        Y: Dependant array, f(X)
+    Returns:
+        npt.NDArray[np.float64]: Least squares coefficients
+    """
+    return least_squares(X, Y)[0]
+
+
+def transform(X, C):
+    """Applies changes to input data X according to the coefficient of the newly fit linear model
+
+    Args:
+        X: Input array to transform
+        C: Coefficient array solution to least squares problem CX = Y
+    Returns:
+        npdt.NDArray[np.float64]: Transformation of X according to linear model == approximation of Y
+    """
+    return np.dot(X, C)
+
+
+def linear_fit_transform(X, Y):
+    """Fits linear model on X,Y then apply transformation on X using coefficients of newly fit model
+
+    Args:
+        X: Input array
+        Y: Dependent array, f(X)
+    Returns:
+        npt.NDArray[np.float64]: transformation of X according to linear model
+    """
+    coef = linear_fit(X, Y)
+    return transform(X, coef), coef
+
+
+def non_linear_fit_transform(X, Y, x_c, ratio):
+    """Compute radial basis functions of X, then fits a linear model between phi(X) and Y, and apply linear
+    transformation to phi in order to compute non-linear approximation of Y
+
+    Args:
+        X: Input array
+        Y: Dependent array, f(X)
+        x_c: radial basis function centers
+        ratio: float used to compute epsilon
+    Returns:
+        npt.NDArray[np.float64]: transformation of X according to linear model
+    """
+
+    epsilon = ratio * diameter(X)
+    phi_x = radial_basis_function(X, x_c, epsilon)
+    return linear_fit_transform(phi_x, Y)
 
 
 def mean_squared_error(y_true, y_pred):
