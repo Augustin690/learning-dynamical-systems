@@ -199,10 +199,4 @@ def built_int_interpolator(X, Y, eps):
     return RBFInterpolator(X, Y, kernel="gaussian", epsilon=eps)
 
 
-def trajectory(callable_fun, x_0, T, t_eval):
-    solve = solve_ivp(callable_fun, [0, T], x_0, t_eval=t_eval)
-
-    return solve.y.T
-
-
 ## add plot functions ?
